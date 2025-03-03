@@ -1,14 +1,19 @@
 import asyncio
-import os
+import os, time
 import re
 from datetime import datetime
 from typing import Dict, Any, List, Tuple
 from anthropic import AsyncAnthropic
 
 import os
+import inspect
 
-import os
+# Print script location to check which file is actually running
+print(f"Running script from: {inspect.getfile(inspect.currentframe())}")
+print(f"Current directory: {os.getcwd()}")
+print(f"Environment variables: {list(os.environ.keys())}")
 
+time.sleep(99)
 def load_api_key():
     try:
         if 'ANTHROPIC_API_KEY' not in os.environ:
