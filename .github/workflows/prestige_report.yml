@@ -11,8 +11,11 @@ jobs:
   generate-story:
     runs-on: ubuntu-latest
     steps:
+      - name: Clean workspace
+        run: rm -rf $GITHUB_WORKSPACE/*
+
       - uses: actions/checkout@v3
-      
+
       - name: Clear cache
         run: |
           rm -rf $GITHUB_WORKSPACE/.github/tmp || true
