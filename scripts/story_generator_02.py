@@ -77,7 +77,23 @@ class VanityFairWriter(Agent):
         super().__init__(
             name="Vanity Fair Writer",
             role="Writer",
-            system_prompt="You are an accomplished writer for an equivalent Vanity Fair magazine. Write a captivating 200-word story based on the assigned topic. Use Vanity Fair's signature blend of sophisticated prose, cultural insight, and narrative flair. Include a compelling headline."
+            system_prompt="""You are an accomplished writer for Vanity Fair magazine. 
+
+Your task is to write a captivating 200-300 word story based on the assigned topic, using Vanity Fair's signature blend of sophisticated prose, cultural insight, and narrative flair.
+
+IMPORTANT FORMATTING INSTRUCTIONS:
+1. Begin ONLY with the headline in quotes, followed by the story text.
+2. Do NOT include any meta-commentary about which idea you selected.
+3. Do NOT include any phrases like "I've chosen" or "Based on idea #2" etc.
+4. Do NOT include any introduction or explanation of your writing process.
+5. Do NOT label your response with "Headline:" or similar tags.
+6. Do NOT include any text after the story is complete.
+
+EXAMPLE OF CORRECT FORMAT:
+"The Secret Lives of Hollywood's Elite"
+The carefully curated image of Hollywood's brightest stars often masks a reality far more complex than their Instagram feeds suggest. Behind closed doors...
+
+[rest of story continues]"""
         )
 
 async def generate_feature_ideas():
@@ -159,11 +175,12 @@ async def write_feature(ideas):
                 }
     
     # Send all ideas to the writer and have them choose one based on their personality
-    prompt = f"""Here are 3 feature ideas for Vanity Fair:
+    prompt = f"""Here are the feature ideas for Vanity Fair:
 
 {ideas}
 
-select the ONE idea, Then write a compelling 300-word feature based on your selected idea."""
+Select ONE idea that speaks to you most. Write a complete feature article based ONLY on your selected idea. 
+Your response should begin with ONLY the headline in quotes, followed immediately by the article content."""
     
     print("\nSending all ideas to writer for selection and story creation...")
     result = await writer.analyze(prompt)
@@ -172,36 +189,71 @@ select the ONE idea, Then write a compelling 300-word feature based on your sele
     print("=" * 50)
     print(result['response'].strip())
     
-    # Try to extract the idea number chosen by the writer
+    # Extract the headline from the response
     response_text = result['response']
-    idea_number_match = re.search(r"I(?:'ve)? (?:chose|choose|select|picked|am choosing) idea (?:number )?(\d+)", response_text, re.IGNORECASE)
-    if not idea_number_match:
-        idea_number_match = re.search(r"Idea (?:number )?(\d+):", response_text, re.IGNORECASE)
     
-    idea_number = int(idea_number_match.group(1)) if idea_number_match else 1
+    # Extract headline - looking for text in quotes at the beginning
+    headline_match = re.match(r'^"([^"]+)"', response_text.strip())
+    if headline_match:
+        headline = headline_match.group(1)
+    else:
+        # Fall back to looking for a line that might be the headline
+        first_lines = response_text.strip().split('\n')
+        if first_lines:
+            potential_headline = first_lines[0].strip()
+            # Remove quotes if they exist
+            headline = potential_headline.strip('"')
+        else:
+            headline = "Vanity Fair Feature"
+    
+    # Try to determine which idea was chosen based on headline similarity
+    chosen_idea_number = 1  # Default
+    best_match_score = 0
+    
+    for num, idea_info in parsed_ideas.items():
+        # Simple string similarity check
+        idea_title = idea_info.get("title", "")
+        similarity_score = 0
+        
+        # Count word overlap between headline and idea title
+        headline_words = set(headline.lower().split())
+        title_words = set(idea_title.lower().split())
+        common_words = headline_words.intersection(title_words)
+        
+        if common_words:
+            similarity_score = len(common_words) / max(len(headline_words), len(title_words))
+            
+        if similarity_score > best_match_score:
+            best_match_score = similarity_score
+            chosen_idea_number = num
     
     # Get the chosen idea information
-    chosen_idea_info = parsed_ideas.get(idea_number, None)
+    chosen_idea_info = parsed_ideas.get(chosen_idea_number, None)
     
     if chosen_idea_info:
-        headline = chosen_idea_info["title"]
         description = chosen_idea_info["description"]
     else:
         # Fallback if we couldn't parse the chosen idea properly
-        headline = f"Vanity Fair Feature: Idea {idea_number}"
-        description = idea_dict.get(idea_number, "")
+        description = idea_dict.get(chosen_idea_number, "")
     
-    return result['response'], result['tokens'], {
-        "idea_number": idea_number,
+    # Clean up story content - remove the headline from the beginning
+    if headline_match:
+        story_content = re.sub(r'^"[^"]+"\s*\n?', '', response_text.strip())
+    else:
+        # Try to remove the first line if it looks like a headline
+        story_lines = response_text.strip().split('\n')
+        if len(story_lines) > 1:
+            story_content = '\n'.join(story_lines[1:]).strip()
+        else:
+            story_content = response_text.strip()
+    
+    return story_content, result['tokens'], {
+        "idea_number": chosen_idea_number,
         "headline": headline,
         "description": description,
-        "chosen_idea": idea_dict.get(idea_number, "")
+        "chosen_idea": idea_dict.get(chosen_idea_number, "")
     }
 
-
-# Update the save_to_website function to add the anchor and properly update links
-
-# Update the save_to_website function to add the anchor and properly update links
 
 # Update the save_to_website function to add the anchor and properly update links
 
