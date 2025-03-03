@@ -34,6 +34,8 @@ jobs:
           
       - name: Generate story
         run: python scripts/story_generator_02.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         
       - name: Commit and push changes
         run: |
