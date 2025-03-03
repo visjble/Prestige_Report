@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt
           
       - name: Generate story
-        run: python scripts/story_generator2.py
+        run: python scripts/story_generator_02.py
         
       - name: Commit and push changes
         run: |
