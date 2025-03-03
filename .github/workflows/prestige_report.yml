@@ -19,7 +19,7 @@ jobs:
       - name: Add API key
         run: echo "${{ secrets.ANTHROPIC_API_KEY }}" > scripts/key.txt
       - name: Generate story
-        run: python scripts/story_generator2.py
+        run: python scripts/story_generator_02.py
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'
