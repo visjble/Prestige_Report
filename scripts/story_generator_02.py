@@ -5,16 +5,36 @@ from datetime import datetime
 from typing import Dict, Any, List, Tuple
 from anthropic import AsyncAnthropic
 
+import os
+
 def load_api_key():
     try:
-        with open("/home/q/Documents/PythonProjects/vanityfair/The-Prestige-Report/scripts/kei.txt", "r") as file:  #THIS FILE CONTAINS YOUR ANTHROPIC API KEY
-            api_key = file.read().strip()
-            if not api_key:
-                raise ValueError("API key is empty")
-            return api_key
+<<<<<<< Updated upstream
+        # Use only the GitHub Actions environment variable
+        if 'ANTHROPIC_API_KEY' not in os.environ:
+            raise ValueError("ANTHROPIC_API_KEY environment variable not found")
+            
+        api_key = os.environ.get('ANTHROPIC_API_KEY')
+=======
+        # Check if running in GitHub Actions (environment variable exists)
+        if 'ANTHROPIC_API_KEY' in os.environ:
+            api_key = os.environ.get('ANTHROPIC_API_KEY')
+        else:
+            # Fallback to local file for local development
+            with open("scripts/key.txt", "r") as file:
+                api_key = file.read().strip()
+>>>>>>> Stashed changes
+        
+        if not api_key:
+            raise ValueError("API key is empty")
+        
+        return api_key
+<<<<<<< Updated upstream
+=======
     except FileNotFoundError:
         print("Error: key.txt not found")
         exit(1)
+>>>>>>> Stashed changes
     except Exception as e:
         print(f"Error reading API key: {e}")
         exit(1)
