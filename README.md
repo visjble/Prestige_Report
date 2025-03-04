@@ -23,7 +23,7 @@ The Prestige Report runs on a Python-based system that leverages the Anthropic C
 All stories published by The Prestige Report are works of AI-generated fiction. While inspired by real-world contexts, personalities, and events, these narratives are entirely fictional and should not be interpreted as factual reporting.
 
 ## Visit
-Explore today's story at [The Prestige Report](https://yourwebsite.com).
+Explore today's story at [The Prestige Report](https://www.locutorium.com/Prestige_Report/).
 
 ## License
 © 2025 The Prestige Report
