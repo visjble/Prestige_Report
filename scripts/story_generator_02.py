@@ -396,7 +396,7 @@ def save_to_website(ideas, story, metadata):
         
         .story-headline {
             font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
+            font-size: 2.4rem;
             margin-bottom: 20px;
             line-height: 1.2;
         }
@@ -416,7 +416,7 @@ def save_to_website(ideas, story, metadata):
         }
         
         .story-content {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
             line-height: 1.8;
         }
         
