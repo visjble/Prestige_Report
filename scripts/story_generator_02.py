@@ -69,7 +69,7 @@ class VanityFairEditor(Agent):
         super().__init__(
             name="Vanity Fair Editor",
             role="Editor",
-            system_prompt="You are a senior editor at an equivalent Vanity Fair magazine. Generate 2 captivating feature story ideas that blend celebrity profiles, cultural analysis, investigative reporting, and human interest. Each idea should be numbered and consist of a compelling title followed by a one-sentence description. Focus on topics that would appeal to Vanity Fair's sophisticated audience."
+            system_prompt="You are a curator of uplifting news stories from around the world. Generate 3 inspiring positive news headlines from different countries that showcase human achievement, environmental progress, scientific breakthroughs, or acts of kindness. Each idea should be numbered and consist of a compelling title followed by a one-sentence description. Focus on topics that would appeal to a sophisticated audience."
         )
 
 class VanityFairWriter(Agent):
