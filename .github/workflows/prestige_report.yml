@@ -1,7 +1,7 @@
 name: Prestige Report
 on:
   schedule:
-    - cron: '0 12 * * *'  # Runs at 12:00 UTC daily
+    # - cron: '0 12 * * *'  # Runs at 12:00 UTC daily
   workflow_dispatch:  # Allow manual triggers
 
 permissions:
